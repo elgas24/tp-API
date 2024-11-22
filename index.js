@@ -70,4 +70,17 @@ app.patch("/article/:id", async (req, res) => {
   }
 });
 
+app.delete("/article/:id", async (req, res) => {
+    try {
+      deleteUser(req.params.id);
+      res.json({
+        message: "updated",
+      });
+    } catch (err) {
+      res.status(500).json({
+        message: `Une erreur s'est produite lors de la mise à jour du nom de l'utilisateur : ${err}`,
+      });
+    }
+  });
+
 app.listen(port, () => console.log(`Server listening to port ${port}.`));
