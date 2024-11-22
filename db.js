@@ -50,23 +50,19 @@ const verifyUnicity = async (title) => {
   let result = await pool.query(
     `SELECT COUNT(id) FROM articles WHERE title ='${title}'`
   );
- //result = new Boolean(Number(result.rows[0].count));
-// result = new Boolean(Number(result.rowCount));
-//result = Number(result.rows[0].count);
-console.log(result.rows[0].count > 0);
-
-   // Assuming result.rows[0].count is an integer
-   return Number(result.rows[0].count > 0);
+  result = new Boolean(Number(result.rows[0].count));
+  // Assuming result.rows[0].count is an integer
+  return Number(result);
 };
 
 ///////////////////////////////////////////////
-const createUser = async (author,title,content) => {
-  if (verifyUnicity(title)===true) {
+const createUser = async (author, title, content) => {
+  if (await verifyUnicity(title)) {
     throw new Error("Article exists already");
   }
-
-  const result = await pool.query("INSERT INTO public.articles (id,author,title,content) VALUES(nextval('articles_id_seq'), $1,$2,$3) RETURNING *",
-    [author,title,JSON.stringify(content)]
+  const result = await pool.query(
+    "INSERT INTO public.articles (id,author,title,content) VALUES(nextval('articles_id_seq'), $1,$2,$3) RETURNING *",
+    [author, title, JSON.stringify(content)]
   );
 
   return result.rows[0];
